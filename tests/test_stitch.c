@@ -286,7 +286,77 @@ static void test_public_api_rejects_invalid_inputs(void) {
     expect_api_error(BP_ERR_GEOMETRY, start, end, valid_area, &invalid_obstacle, 1, 1.0, 0.0);
 }
 
+/* Fractional intersections must survive decomposition, clipping and visibility,
+ * including paths that follow an inclined boundary after rounding to double. */
+static void test_inclined_pipeline(void) {
+    const BpPoint triangle[]={{0,0},{7,1},{2,6}};
+    const BpPoint general[]={ {5,0}, {-3.3632093666488725,5.825249499527395},
+        {-1.6284242275864134,-2.8205134984557687} };
+    const BpPoint concave[]={{0,0},{5,0},{5,4},{3,4},{3,2},{2,2},{2,4},{0,4}};
+    BpPolygon fixtures[]={{triangle,3},{general,3},{concave,8}};
+    for (size_t i=0;i<3;i++) {
+        BpPolygon area=fixtures[i]; BpPath path={0};
+        CHECK(generateWaypoints(area.vertices[0],area.vertices[1],area,NULL,0,0.7,25,&path)==BP_OK);
+        check_safe_path(area,NULL,0,&path);
+        freeWaypoints(&path);
+    }
+}
+
+static void test_deterministic_general_polygons(void) {
+    const double pi=acos(-1.0);
+    for (size_t fixture=0;fixture<70;fixture++) {
+        size_t n=3+fixture%7; double phase=(double)(fixture/7)*0.19;
+        BpPoint vertices[9];
+        for (size_t i=0;i<n;i++) {
+            double angle=2*pi*(double)i/(double)n+phase;
+            double radius=5+2*sin((double)i*2.1+phase);
+            vertices[i]=(BpPoint){radius*cos(angle),radius*sin(angle)};
+        }
+        BpPolygon area={vertices,n}; BpPath path={0};
+        CHECK(generateWaypoints(vertices[0],vertices[1],area,NULL,0,0.7,25,&path)==BP_OK);
+        check_safe_path(area,NULL,0,&path);
+        freeWaypoints(&path);
+    }
+}
+
+static void test_general_obstacles_and_closed_route(void) {
+    const BpPoint outer[]={{0,0},{20,0},{20,20},{0,20}};
+    const BpPoint left[]={{4,8},{7,6},{9,9},{6,12}};
+    const BpPoint right[]={{12,8},{15,7},{17,10},{14,13},{11,11}};
+    BpPolygon area={outer,4},holes[]={{left,4},{right,5}};
+    BpPoint start={1,1}; BpPath path={0};
+    CHECK(generateWaypoints(start,start,area,holes,2,1.3,20,&path)==BP_OK);
+    CHECK(bp_same_point(path.points[0],start));
+    CHECK(bp_same_point(path.points[path.count-1],start));
+    check_safe_path(area,holes,2,&path);freeWaypoints(&path);
+    expect_api_error(BP_ERR_GEOMETRY,(BpPoint){6,9},start,area,holes,2,1,0);
+    const BpPoint touching[]={{0,4},{3,4},{3,6},{0,6}};
+    BpPolygon invalid={touching,4};
+    expect_api_error(BP_ERR_GEOMETRY,start,start,area,&invalid,1,1,0);
+}
+
+static void test_overlap_spacing(void) {
+    const BpPoint vertices[]={{0,0},{10,0},{10,10},{0,10}};
+    const double expected[]={0,1.5,3,4.5,6,7.5,9,10};
+    int seen[8]={0}; BpPath path={0};BpPolygon area={vertices,4};
+    CHECK(generateWaypoints(vertices[0],vertices[2],area,NULL,0,2,25,&path)==BP_OK);
+    for (size_t i=1;i<path.count;i++) {
+        BpPoint a=path.points[i-1],b=path.points[i];
+        if (a.x==b.x && fmin(a.y,b.y)==0 && fmax(a.y,b.y)==10) {
+            size_t lane=0;
+            while (lane<8 && fabs(a.x-expected[lane])>1e-12) lane++;
+            CHECK(lane<8);seen[lane]=1;
+        }
+    }
+    for (size_t i=0;i<8;i++) CHECK(seen[i]);
+    freeWaypoints(&path);
+}
+
 int main(void) {
+    test_overlap_spacing();
+    test_general_obstacles_and_closed_route();
+    test_deterministic_general_polygons();
+    test_inclined_pipeline();
     test_shortest_path_around_rectangle();
     test_shortest_path_through_concavity();
     test_stitch_connects_a_cell_path();

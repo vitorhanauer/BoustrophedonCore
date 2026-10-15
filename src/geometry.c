@@ -17,12 +17,24 @@ size_t bp_ring_count(BpPolygon ring) {
 static int orientation_sign(BpPoint a, BpPoint b, BpPoint c) {
     long double p=((long double)b.x-a.x)*((long double)c.y-a.y);
     long double q=((long double)b.y-a.y)*((long double)c.x-a.x);
-    long double value=p-q, tolerance=16*LDBL_EPSILON*(fabsl(p)+fabsl(q));
+    /* Account for rounded input/intersection coordinates, including points
+     * near a vertex where product-only cancellation bounds vanish. */
+    long double dx=(long double)b.x-a.x,dy=(long double)b.y-a.y;
+    long double px=(long double)c.x-a.x,py=(long double)c.y-a.y;
+    long double input_error=fabsl(dx)*(fabsl(c.y)+fabsl(a.y))
+        +fabsl(dy)*(fabsl(c.x)+fabsl(a.x))
+        +fabsl(px)*(fabsl(b.y)+fabsl(a.y))
+        +fabsl(py)*(fabsl(b.x)+fabsl(a.x));
+    long double value=p-q, tolerance=8*DBL_EPSILON*input_error
+        +16*LDBL_EPSILON*(fabsl(p)+fabsl(q));
     return value > tolerance ? 1 : value < -tolerance ? -1 : 0;
 }
 static int on_segment(BpPoint a, BpPoint b, BpPoint p) {
-    return orientation_sign(a,b,p)==0 && p.x>=fmin(a.x,b.x) && p.x<=fmax(a.x,b.x)
-        && p.y>=fmin(a.y,b.y) && p.y<=fmax(a.y,b.y);
+    long double ex=8*DBL_EPSILON*fmax(fabs(a.x),fabs(b.x));
+    long double ey=8*DBL_EPSILON*fmax(fabs(a.y),fabs(b.y));
+    return orientation_sign(a,b,p)==0 && (long double)p.x>=fmin(a.x,b.x)-ex
+        && (long double)p.x<=fmax(a.x,b.x)+ex
+        && (long double)p.y>=fmin(a.y,b.y)-ey && (long double)p.y<=fmax(a.y,b.y)+ey;
 }
 static int segments_touch(BpPoint a, BpPoint b, BpPoint c, BpPoint d) {
     int ab_c=orientation_sign(a,b,c), ab_d=orientation_sign(a,b,d);

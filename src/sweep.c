@@ -125,12 +125,16 @@ static int slice_limits(BpPolygon boundary, double x, double *low, double *high)
 static int point_on_edge(BpPoint p, BpPoint a, BpPoint b) {
     long double dx = (long double)b.x - a.x, dy = (long double)b.y - a.y;
     long double px = (long double)p.x - a.x, py = (long double)p.y - a.y;
-    long double scale = fabsl(dx) + fabsl(dy) + fabsl(px) + fabsl(py) + 1.0L;
-    if (fabsl(dx * py - dy * px) > 64.0L * LDBL_EPSILON * scale * scale) return 0;
-    return p.x >= fmin(a.x, b.x) - 64.0 * DBL_EPSILON * scale
-        && p.x <= fmax(a.x, b.x) + 64.0 * DBL_EPSILON * scale
-        && p.y >= fmin(a.y, b.y) - 64.0 * DBL_EPSILON * scale
-        && p.y <= fmax(a.y, b.y) + 64.0 * DBL_EPSILON * scale;
+    long double scale=fabsl(dx)*(fabsl(p.y)+fabsl(a.y))
+        +fabsl(dy)*(fabsl(p.x)+fabsl(a.x))
+        +fabsl(px)*(fabsl(b.y)+fabsl(a.y))
+        +fabsl(py)*(fabsl(b.x)+fabsl(a.x));
+    long double tolerance=8*DBL_EPSILON*scale+16*LDBL_EPSILON*(fabsl(dx*py)+fabsl(dy*px));
+    if (fabsl(dx*py-dy*px)>tolerance) return 0;
+    long double ex=8*DBL_EPSILON*fmax(fabs(a.x),fabs(b.x));
+    long double ey=8*DBL_EPSILON*fmax(fabs(a.y),fabs(b.y));
+    return (long double)p.x>=fmin(a.x,b.x)-ex && (long double)p.x<=fmax(a.x,b.x)+ex
+        && (long double)p.y>=fmin(a.y,b.y)-ey && (long double)p.y<=fmax(a.y,b.y)+ey;
 }
 
 /* Continue from the sweep endpoint around the complete boundary. */

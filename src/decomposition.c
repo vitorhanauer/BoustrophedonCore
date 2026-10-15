@@ -69,7 +69,8 @@ static BpStatus append_point(PointList *list, BpPoint point) {
 
 static long double edge_y_at(const SweepEdge *edge, double x) {
     long double dx = (long double)edge->b.x - edge->a.x;
-    if (dx == 0) return (long double)edge->a.y;
+    if (x == edge->a.x || dx == 0) return (long double)edge->a.y;
+    if (x == edge->b.x) return (long double)edge->b.y;
     return (long double)edge->a.y +
         (((long double)x - edge->a.x) / dx) * ((long double)edge->b.y - edge->a.y);
 }
@@ -104,6 +105,7 @@ static BpStatus slab_intervals(const BpDomain *domain, double left, double right
     Crossing *crossings, size_t crossing_capacity, IntervalList *output) {
     double middle = left / 2.0 + right / 2.0;
     size_t count = 0;
+    if (!(left < middle && middle < right)) return BP_ERR_LIMIT;
     BpStatus status;
     status = add_ring_crossings(domain->area, middle, crossings, &count);
     if (status != BP_OK) return status;
