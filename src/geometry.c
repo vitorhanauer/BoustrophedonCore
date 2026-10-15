@@ -63,6 +63,7 @@ int bp_point_free(const BpDomain *domain, BpPoint p) {
 }
 static BpStatus validate_ring(BpPolygon ring) {
     if (!ring.vertices || ring.count<3) return BP_ERR_ARGUMENT;
+    if (ring.count>SIZE_MAX/sizeof(BpPoint)) return BP_ERR_LIMIT;
     size_t n=bp_ring_count(ring);
     if (n<3 || n>SIZE_MAX/sizeof(BpPoint)) return BP_ERR_GEOMETRY;
     long double area=0;

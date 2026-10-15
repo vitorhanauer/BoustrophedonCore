@@ -1,4 +1,5 @@
 #include "test_support.h"
+#include <stdint.h>
 
 #include <float.h>
 
@@ -274,6 +275,8 @@ static void test_public_api_rejects_invalid_inputs(void) {
     BpPoint start = point(1, 1);
     BpPoint end = point(9, 9);
 
+    BpPolygon oversized={square_vertices,SIZE_MAX};
+    expect_api_error(BP_ERR_LIMIT,start,end,oversized,NULL,0,1,0);
     expect_api_error(BP_ERR_ARGUMENT, start, end, valid_area, NULL, 0, 0.0, 0.0);
     expect_api_error(BP_ERR_ARGUMENT, start, end, valid_area, NULL, 0, -1.0, 0.0);
     expect_api_error(BP_ERR_ARGUMENT, start, end, valid_area, NULL, 0, NAN, 0.0);
