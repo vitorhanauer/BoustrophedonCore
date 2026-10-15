@@ -137,9 +137,22 @@ static int point_on_path(BpPoint sample, const BpPath *path, double radius) {
 }
 
 static void check_rectangle_coverage(BpPolygon polygon, const BpPath *path, double radius) {
-    /* The rectangle's analytic vertical-lane coverage condition is that every
-     * point is within radius of a traversed segment. Test a dense deterministic
-     * grid, including all four edges and corners. */
+    /* Analytic certificate: full-height vertical segments at x_i cover this
+     * rectangle iff the extreme offsets <= radius and consecutive gaps <= 2r.
+     * Then also check a grid, including the edges, as a separate regression. */
+    double lanes[128]; size_t lane_count=0;
+    for (size_t i=1;i<path->count;i++) {
+        BpPoint a=path->points[i-1],b=path->points[i];
+        if (a.x==b.x && fmin(a.y,b.y)<=EPS && fmax(a.y,b.y)>=4-EPS) {
+            CHECK(lane_count<128);lanes[lane_count++]=a.x;
+        }
+    }
+    CHECK(lane_count>0);
+    for (size_t i=0;i<lane_count;i++) for (size_t j=i+1;j<lane_count;j++)
+        if (lanes[j]<lanes[i]) { double t=lanes[i];lanes[i]=lanes[j];lanes[j]=t; }
+    CHECK(lanes[0]<=radius+EPS);
+    CHECK(6-lanes[lane_count-1]<=radius+EPS);
+    for (size_t i=1;i<lane_count;i++) CHECK(lanes[i]-lanes[i-1]<=2*radius+EPS);
     for (int ix = 0; ix <= 60; ++ix) {
         for (int iy = 0; iy <= 40; ++iy) {
             BpPoint sample = point((double)ix / 10.0, (double)iy / 10.0);
