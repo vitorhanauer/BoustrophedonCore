@@ -1,0 +1,17 @@
+.git
+.github
+.agents
+.codex
+build
+build-*
+cmake-build-*
+*.o
+*.a
+*.so
+*.so.*
+*.gcda
+*.gcno
+*.profraw
+*.profdata
+core
+core.*
