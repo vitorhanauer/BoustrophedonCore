@@ -13,13 +13,15 @@ printf 'Host CPU model: ' >&2
 awk -F: '/model name/ { sub(/^ /, "", $2); print $2; exit }' /proc/cpuinfo >&2
 printf 'Host online CPUs: ' >&2
 getconf _NPROCESSORS_ONLN >&2
-printf 'Container limits (memory.max, cpu.max):\n' >&2
+printf 'Image: ' >&2
+docker image inspect --format '{{.Id}}' "$image" >&2
+printf 'Container UID and limits (memory.max, memory.swap.max, cpu.max):\n' >&2
 docker run --rm \
     --memory=512m \
     --memory-swap=512m \
     --cpus=1 \
     --entrypoint /bin/sh \
-    "$image" -c 'cat /sys/fs/cgroup/memory.max /sys/fs/cgroup/cpu.max' >&2
+    "$image" -c 'id -u; cat /sys/fs/cgroup/memory.max /sys/fs/cgroup/memory.swap.max /sys/fs/cgroup/cpu.max' >&2
 
 if [ "$#" -eq 0 ]; then
     set -- --all

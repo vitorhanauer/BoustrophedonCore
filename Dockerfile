@@ -24,7 +24,7 @@ RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
 
 FROM debian:bookworm-slim AS runtime
 
-COPY --from=build /usr/local/lib/libboustrophedon.so* /usr/local/lib/
+COPY --from=build /usr/local/lib/ /usr/local/lib/
 COPY --from=build /usr/local/include/boustrophedon.h /usr/local/include/boustrophedon.h
 COPY --from=build /artifacts/ /usr/local/bin/
 
