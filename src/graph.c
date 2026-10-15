@@ -172,6 +172,7 @@ static BpStatus optimize_order(const BpDomain *domain, const BpDecomposition *de
 static BpStatus greedy_order(const BpDomain *domain, const BpDecomposition *decomposition,
         BpPoint start, BpPoint end, const double *path_lengths, size_t *order) {
     size_t count = decomposition->count;
+    (void)path_lengths;
     unsigned char *visited = calloc(count, sizeof(*visited));
     if (!visited) return BP_ERR_MEMORY;
 
@@ -193,7 +194,7 @@ static BpStatus greedy_order(const BpDomain *domain, const BpDecomposition *deco
                     &exit_cost);
                 if (status == BP_ERR_NO_PATH) continue;
                 if (status != BP_OK) { free(visited); return status; }
-                double cost = entry + path_lengths[cell * 4 + variant] + exit_cost;
+                double cost = entry; /* nearest-neighbor ordering; DP optimizes total route */
                 if (!isfinite(cost)) continue;
                 if (cost < selected_cost ||
                     (cost == selected_cost && (cell < selected_cell ||
