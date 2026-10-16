@@ -128,3 +128,7 @@ LeakSanitizer needs an environment without a ptrace-based sandbox. The allocator
 fault-injection suite uses GNU-style linker wrapping and is enabled on Linux with
 GCC/Clang. The library itself uses only C11 and the math library; the benchmark
 runner uses POSIX process and timing APIs.
+
+## License
+
+Distributed under the [MIT License](LICENSE).
