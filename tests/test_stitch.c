@@ -355,7 +355,38 @@ static void test_overlap_spacing(void) {
     freeWaypoints(&path);
 }
 
+static void test_sweep_finishes_without_extra_contour(void) {
+    const BpPoint vertices[] = {{0, 0}, {2, 0}, {2, 2}, {0, 2}};
+    BpPolygon area = {vertices, 4};
+    BpPath route = {0};
+    CHECK(generateWaypoints(vertices[0], vertices[2], area, NULL, 0,
+        1.0, 0.0, &route) == BP_OK);
+    check_safe_path(area, NULL, 0, &route);
+    CHECK(same_point(route.points[0], vertices[0]));
+    CHECK(same_point(route.points[route.count - 1], vertices[2]));
+    /* Three height-2 cuts and two width-1 links finish at the destination.
+     * A perimeter lap would add another 8 units. */
+    NEAR(independent_length(&route), 8.0, 1e-9);
+    freeWaypoints(&route);
+}
+
+static void test_closed_route_returns_after_last_cut(void) {
+    BpPolygon area = {square_vertices, 4};
+    BpPath route = {0};
+    CHECK(generateWaypoints(square_vertices[0], square_vertices[0], area,
+        NULL, 0, 1.0, 10.0, &route) == BP_OK);
+    check_safe_path(area, NULL, 0, &route);
+    CHECK(same_point(route.points[0], square_vertices[0]));
+    CHECK(same_point(route.points[route.count - 1], square_vertices[0]));
+    /* Thirteen height-10 cuts, horizontal links totaling 10, and the
+     * direct diagonal home. A contour lap would add another 40 units. */
+    NEAR(independent_length(&route), 140.0 + sqrt(200.0), 1e-9);
+    freeWaypoints(&route);
+}
+
 int main(void) {
+    test_closed_route_returns_after_last_cut();
+    test_sweep_finishes_without_extra_contour();
     test_overlap_spacing();
     test_general_obstacles_and_closed_route();
     test_deterministic_general_polygons();

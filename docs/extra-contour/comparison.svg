@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="660" viewBox="0 0 1120 660"><rect width="1120" height="660" fill="#f8fafc"/>
+<text x="36" y="35" font-family="sans-serif" font-size="22">Percurso GeoJSON: antes e depois</text>
+<text x="55" y="70" font-family="sans-serif" font-size="20">Antes: contorno extra</text>
+<text x="55" y="598" font-family="sans-serif" font-size="17">31 pontos · 194.14 unidades</text>
+<rect x="55" y="100" width="430" height="430" fill="white" stroke="#94a3b8"/>
+<path d="M55.0,530.0 L55.0,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M55.0,100.0 L93.7,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M93.7,100.0 L93.7,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M93.7,530.0 L132.4,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M132.4,530.0 L132.4,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M132.4,100.0 L171.10000000000002,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M171.10000000000002,100.0 L171.10000000000002,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M171.10000000000002,530.0 L209.8,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M209.8,530.0 L209.8,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M209.8,100.0 L248.5,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M248.5,100.0 L248.5,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M248.5,530.0 L287.20000000000005,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M287.20000000000005,530.0 L287.20000000000005,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M287.20000000000005,100.0 L325.9,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M325.9,100.0 L325.9,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M325.9,530.0 L364.6,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M364.6,530.0 L364.6,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M364.6,100.0 L403.3,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M403.3,100.0 L403.3,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M403.3,530.0 L442.0,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M442.0,530.0 L442.0,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M442.0,100.0 L480.7,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M480.7,100.0 L480.7,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M480.7,530.0 L485.0,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M485.0,530.0 L485.0,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M485.0,100.0 L55.0,100.0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+<path d="M55.0,100.0 L55.0,530.0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+<path d="M55.0,530.0 L485.0,530.0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+<path d="M485.0,530.0 L485.0,100.0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+<path d="M485.0,100.0 L55.0,530.0" stroke="#059669" stroke-width="2.5" fill="none"/>
+<circle cx="55.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 0: [0.0, 0.0]</title></circle>
+<circle cx="55.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 1: [0.0, 10.0]</title></circle>
+<circle cx="93.7" cy="100.0" r="3" fill="#0f172a"><title>Ponto 2: [0.9, 10.0]</title></circle>
+<circle cx="93.7" cy="530.0" r="3" fill="#0f172a"><title>Ponto 3: [0.9, 0.0]</title></circle>
+<circle cx="132.4" cy="530.0" r="3" fill="#0f172a"><title>Ponto 4: [1.8, 0.0]</title></circle>
+<circle cx="132.4" cy="100.0" r="3" fill="#0f172a"><title>Ponto 5: [1.8, 10.0]</title></circle>
+<circle cx="171.10000000000002" cy="100.0" r="3" fill="#0f172a"><title>Ponto 6: [2.7, 10.0]</title></circle>
+<circle cx="171.10000000000002" cy="530.0" r="3" fill="#0f172a"><title>Ponto 7: [2.7, 0.0]</title></circle>
+<circle cx="209.8" cy="530.0" r="3" fill="#0f172a"><title>Ponto 8: [3.6, 0.0]</title></circle>
+<circle cx="209.8" cy="100.0" r="3" fill="#0f172a"><title>Ponto 9: [3.6, 10.0]</title></circle>
+<circle cx="248.5" cy="100.0" r="3" fill="#0f172a"><title>Ponto 10: [4.5, 10.0]</title></circle>
+<circle cx="248.5" cy="530.0" r="3" fill="#0f172a"><title>Ponto 11: [4.5, 0.0]</title></circle>
+<circle cx="287.20000000000005" cy="530.0" r="3" fill="#0f172a"><title>Ponto 12: [5.4, 0.0]</title></circle>
+<circle cx="287.20000000000005" cy="100.0" r="3" fill="#0f172a"><title>Ponto 13: [5.4, 10.0]</title></circle>
+<circle cx="325.9" cy="100.0" r="3" fill="#0f172a"><title>Ponto 14: [6.3, 10.0]</title></circle>
+<circle cx="325.9" cy="530.0" r="3" fill="#0f172a"><title>Ponto 15: [6.3, 0.0]</title></circle>
+<circle cx="364.6" cy="530.0" r="3" fill="#0f172a"><title>Ponto 16: [7.2, 0.0]</title></circle>
+<circle cx="364.6" cy="100.0" r="3" fill="#0f172a"><title>Ponto 17: [7.2, 10.0]</title></circle>
+<circle cx="403.3" cy="100.0" r="3" fill="#0f172a"><title>Ponto 18: [8.1, 10.0]</title></circle>
+<circle cx="403.3" cy="530.0" r="3" fill="#0f172a"><title>Ponto 19: [8.1, 0.0]</title></circle>
+<circle cx="442.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 20: [9.0, 0.0]</title></circle>
+<circle cx="442.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 21: [9.0, 10.0]</title></circle>
+<circle cx="480.7" cy="100.0" r="3" fill="#0f172a"><title>Ponto 22: [9.9, 10.0]</title></circle>
+<circle cx="480.7" cy="530.0" r="3" fill="#0f172a"><title>Ponto 23: [9.9, 0.0]</title></circle>
+<circle cx="485.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 24: [10.0, 0.0]</title></circle>
+<circle cx="485.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 25: [10.0, 10.0]</title></circle>
+<circle cx="55.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 26: [0.0, 10.0]</title></circle>
+<circle cx="55.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 27: [0.0, 0.0]</title></circle>
+<circle cx="485.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 28: [10.0, 0.0]</title></circle>
+<circle cx="485.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 29: [10.0, 10.0]</title></circle>
+<circle cx="55.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 30: [0.0, 0.0]</title></circle>
+<text x="59.0" y="549.0" font-family="sans-serif" font-size="10">0,27,30</text>
+<text x="59.0" y="92.0" font-family="sans-serif" font-size="10">1,26</text>
+<text x="97.7" y="92.0" font-family="sans-serif" font-size="10">2</text>
+<text x="97.7" y="549.0" font-family="sans-serif" font-size="10">3</text>
+<text x="136.4" y="549.0" font-family="sans-serif" font-size="10">4</text>
+<text x="136.4" y="92.0" font-family="sans-serif" font-size="10">5</text>
+<text x="175.10000000000002" y="92.0" font-family="sans-serif" font-size="10">6</text>
+<text x="175.10000000000002" y="549.0" font-family="sans-serif" font-size="10">7</text>
+<text x="213.8" y="549.0" font-family="sans-serif" font-size="10">8</text>
+<text x="213.8" y="92.0" font-family="sans-serif" font-size="10">9</text>
+<text x="252.5" y="92.0" font-family="sans-serif" font-size="10">10</text>
+<text x="252.5" y="549.0" font-family="sans-serif" font-size="10">11</text>
+<text x="291.20000000000005" y="549.0" font-family="sans-serif" font-size="10">12</text>
+<text x="291.20000000000005" y="92.0" font-family="sans-serif" font-size="10">13</text>
+<text x="329.9" y="92.0" font-family="sans-serif" font-size="10">14</text>
+<text x="329.9" y="549.0" font-family="sans-serif" font-size="10">15</text>
+<text x="368.6" y="549.0" font-family="sans-serif" font-size="10">16</text>
+<text x="368.6" y="92.0" font-family="sans-serif" font-size="10">17</text>
+<text x="407.3" y="92.0" font-family="sans-serif" font-size="10">18</text>
+<text x="407.3" y="549.0" font-family="sans-serif" font-size="10">19</text>
+<text x="446.0" y="549.0" font-family="sans-serif" font-size="10">20</text>
+<text x="446.0" y="92.0" font-family="sans-serif" font-size="10">21</text>
+<text x="484.7" y="92.0" font-family="sans-serif" font-size="10">22</text>
+<text x="484.7" y="549.0" font-family="sans-serif" font-size="10">23</text>
+<text x="489.0" y="549.0" font-family="sans-serif" font-size="10">24,28</text>
+<text x="489.0" y="92.0" font-family="sans-serif" font-size="10">25,29</text>
+<text x="605" y="70" font-family="sans-serif" font-size="20">Depois: direto ao destino</text>
+<text x="605" y="598" font-family="sans-serif" font-size="17">27 pontos · 154.14 unidades</text>
+<rect x="605" y="100" width="430" height="430" fill="white" stroke="#94a3b8"/>
+<path d="M605.0,530.0 L605.0,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M605.0,100.0 L643.7,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M643.7,100.0 L643.7,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M643.7,530.0 L682.4,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M682.4,530.0 L682.4,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M682.4,100.0 L721.1,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M721.1,100.0 L721.1,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M721.1,530.0 L759.8,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M759.8,530.0 L759.8,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M759.8,100.0 L798.5,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M798.5,100.0 L798.5,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M798.5,530.0 L837.2,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M837.2,530.0 L837.2,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M837.2,100.0 L875.9,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M875.9,100.0 L875.9,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M875.9,530.0 L914.6,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M914.6,530.0 L914.6,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M914.6,100.0 L953.3,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M953.3,100.0 L953.3,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M953.3,530.0 L992.0,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M992.0,530.0 L992.0,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M992.0,100.0 L1030.7,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M1030.7,100.0 L1030.7,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M1030.7,530.0 L1035.0,530.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M1035.0,530.0 L1035.0,100.0" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+<path d="M1035.0,100.0 L605.0,530.0" stroke="#059669" stroke-width="2.5" fill="none"/>
+<circle cx="605.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 0: [0.0, 0.0]</title></circle>
+<circle cx="605.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 1: [0.0, 10.0]</title></circle>
+<circle cx="643.7" cy="100.0" r="3" fill="#0f172a"><title>Ponto 2: [0.9, 10.0]</title></circle>
+<circle cx="643.7" cy="530.0" r="3" fill="#0f172a"><title>Ponto 3: [0.9, 0.0]</title></circle>
+<circle cx="682.4" cy="530.0" r="3" fill="#0f172a"><title>Ponto 4: [1.8, 0.0]</title></circle>
+<circle cx="682.4" cy="100.0" r="3" fill="#0f172a"><title>Ponto 5: [1.8, 10.0]</title></circle>
+<circle cx="721.1" cy="100.0" r="3" fill="#0f172a"><title>Ponto 6: [2.7, 10.0]</title></circle>
+<circle cx="721.1" cy="530.0" r="3" fill="#0f172a"><title>Ponto 7: [2.7, 0.0]</title></circle>
+<circle cx="759.8" cy="530.0" r="3" fill="#0f172a"><title>Ponto 8: [3.6, 0.0]</title></circle>
+<circle cx="759.8" cy="100.0" r="3" fill="#0f172a"><title>Ponto 9: [3.6, 10.0]</title></circle>
+<circle cx="798.5" cy="100.0" r="3" fill="#0f172a"><title>Ponto 10: [4.5, 10.0]</title></circle>
+<circle cx="798.5" cy="530.0" r="3" fill="#0f172a"><title>Ponto 11: [4.5, 0.0]</title></circle>
+<circle cx="837.2" cy="530.0" r="3" fill="#0f172a"><title>Ponto 12: [5.4, 0.0]</title></circle>
+<circle cx="837.2" cy="100.0" r="3" fill="#0f172a"><title>Ponto 13: [5.4, 10.0]</title></circle>
+<circle cx="875.9" cy="100.0" r="3" fill="#0f172a"><title>Ponto 14: [6.3, 10.0]</title></circle>
+<circle cx="875.9" cy="530.0" r="3" fill="#0f172a"><title>Ponto 15: [6.3, 0.0]</title></circle>
+<circle cx="914.6" cy="530.0" r="3" fill="#0f172a"><title>Ponto 16: [7.2, 0.0]</title></circle>
+<circle cx="914.6" cy="100.0" r="3" fill="#0f172a"><title>Ponto 17: [7.2, 10.0]</title></circle>
+<circle cx="953.3" cy="100.0" r="3" fill="#0f172a"><title>Ponto 18: [8.1, 10.0]</title></circle>
+<circle cx="953.3" cy="530.0" r="3" fill="#0f172a"><title>Ponto 19: [8.1, 0.0]</title></circle>
+<circle cx="992.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 20: [9.0, 0.0]</title></circle>
+<circle cx="992.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 21: [9.0, 10.0]</title></circle>
+<circle cx="1030.7" cy="100.0" r="3" fill="#0f172a"><title>Ponto 22: [9.9, 10.0]</title></circle>
+<circle cx="1030.7" cy="530.0" r="3" fill="#0f172a"><title>Ponto 23: [9.9, 0.0]</title></circle>
+<circle cx="1035.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 24: [10.0, 0.0]</title></circle>
+<circle cx="1035.0" cy="100.0" r="3" fill="#0f172a"><title>Ponto 25: [10.0, 10.0]</title></circle>
+<circle cx="605.0" cy="530.0" r="3" fill="#0f172a"><title>Ponto 26: [0.0, 0.0]</title></circle>
+<text x="609.0" y="549.0" font-family="sans-serif" font-size="10">0,26</text>
+<text x="609.0" y="92.0" font-family="sans-serif" font-size="10">1</text>
+<text x="647.7" y="92.0" font-family="sans-serif" font-size="10">2</text>
+<text x="647.7" y="549.0" font-family="sans-serif" font-size="10">3</text>
+<text x="686.4" y="549.0" font-family="sans-serif" font-size="10">4</text>
+<text x="686.4" y="92.0" font-family="sans-serif" font-size="10">5</text>
+<text x="725.1" y="92.0" font-family="sans-serif" font-size="10">6</text>
+<text x="725.1" y="549.0" font-family="sans-serif" font-size="10">7</text>
+<text x="763.8" y="549.0" font-family="sans-serif" font-size="10">8</text>
+<text x="763.8" y="92.0" font-family="sans-serif" font-size="10">9</text>
+<text x="802.5" y="92.0" font-family="sans-serif" font-size="10">10</text>
+<text x="802.5" y="549.0" font-family="sans-serif" font-size="10">11</text>
+<text x="841.2" y="549.0" font-family="sans-serif" font-size="10">12</text>
+<text x="841.2" y="92.0" font-family="sans-serif" font-size="10">13</text>
+<text x="879.9" y="92.0" font-family="sans-serif" font-size="10">14</text>
+<text x="879.9" y="549.0" font-family="sans-serif" font-size="10">15</text>
+<text x="918.6" y="549.0" font-family="sans-serif" font-size="10">16</text>
+<text x="918.6" y="92.0" font-family="sans-serif" font-size="10">17</text>
+<text x="957.3" y="92.0" font-family="sans-serif" font-size="10">18</text>
+<text x="957.3" y="549.0" font-family="sans-serif" font-size="10">19</text>
+<text x="996.0" y="549.0" font-family="sans-serif" font-size="10">20</text>
+<text x="996.0" y="92.0" font-family="sans-serif" font-size="10">21</text>
+<text x="1034.7" y="92.0" font-family="sans-serif" font-size="10">22</text>
+<text x="1034.7" y="549.0" font-family="sans-serif" font-size="10">23</text>
+<text x="1039.0" y="549.0" font-family="sans-serif" font-size="10">24</text>
+<text x="1039.0" y="92.0" font-family="sans-serif" font-size="10">25</text>
+<text x="36" y="638" font-family="sans-serif" font-size="16" fill="#334155">Azul: varredura · Vermelho: volta extra removida · Verde: conexão final · Índices dos pontos começam em 0</text></svg>

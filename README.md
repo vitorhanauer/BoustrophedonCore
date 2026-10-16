@@ -50,12 +50,15 @@ polygonal boundaries, including concavities. Adjacent cells share a boundary
 interval, rather than only a single point.
 
 Within each x-monotone cell, the path traverses complete vertical cuts with gaps
-no greater than the requested spacing, links cuts along the cell boundary and
-also traverses the full contour. This extra contour travel can increase distance
-and repeat shared cell boundaries. It provides a simple coverage guarantee even
-at sharp or inclined tips: a point within `width/2` of the cell boundary is
-covered by the contour; otherwise its disk of that radius lies inside the cell
-and intersects a vertical cut. Thus the point is covered by that cut.
+no greater than the requested spacing and links successive cuts along the cell
+boundary. After the last cut, it connects to the next cell or the final point
+without adding a full contour lap. Necessary boundary links remain to avoid
+shortcuts outside concave cells.
+
+Full coverage by a disk of radius `width/2` is verified for rectangular cells.
+For arbitrary inclined or sharp boundaries, lane spacing alone does not guarantee
+that every boundary point is within that radius of the route. No complete
+boundary-coverage guarantee is made for those geometries.
 
 The planner starts with nearest-neighbor cell ordering, chooses among four
 coverage variants by dynamic programming, and applies at most ten 2-opt passes

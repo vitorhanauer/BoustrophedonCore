@@ -97,18 +97,12 @@ static void check_path_inside(BpPolygon polygon, const BpPath *path) {
     }
 }
 
-static void check_boundary_vertices(BpPolygon polygon, const BpPath *path) {
-    size_t vertex_count = bp_ring_count(polygon);
-    for (size_t i = 0; i < vertex_count; ++i) {
-        int found = 0;
-        for (size_t j = 0; j < path->count; ++j) {
-            if (same_point(polygon.vertices[i], path->points[j])) {
-                found = 1;
-                break;
-            }
-        }
-        CHECK(found);
-    }
+/* A sweep advances across the cell once; a perimeter lap would backtrack. */
+static void check_no_extra_contour(const BpPath *path, double span) {
+    double horizontal_travel = 0.0;
+    for (size_t i = 1; i < path->count; ++i)
+        horizontal_travel += fabs(path->points[i].x - path->points[i - 1].x);
+    CHECK(close_value(horizontal_travel, span));
 }
 
 static void check_reverse(const BpPath *path, const BpPath *reversed) {
@@ -202,7 +196,7 @@ static void exercise_cell(BpPolygon polygon, double step) {
     }
     for (size_t variant = 0; variant < 4; ++variant) {
         check_path_inside(polygon, &cell.variants[variant]);
-        check_boundary_vertices(polygon, &cell.variants[variant]);
+        check_no_extra_contour(&cell.variants[variant], xmax - xmin);
         check_sweep_spacing(&cell.variants[variant], xmin, xmax, step);
     }
     check_reverse(&cell.variants[0], &cell.variants[2]);
@@ -223,7 +217,7 @@ static void test_rectangle(void) {
     CHECK(bp_cover_cell(&cell, 1.0) == BP_OK);
     for (size_t variant = 0; variant < 4; ++variant) {
         check_path_inside(polygon, &cell.variants[variant]);
-        check_boundary_vertices(polygon, &cell.variants[variant]);
+        check_no_extra_contour(&cell.variants[variant], 6.0);
         check_sweep_spacing(&cell.variants[variant], 0.0, 6.0, 1.0);
         check_rectangle_coverage(polygon, &cell.variants[variant], 0.5);
     }

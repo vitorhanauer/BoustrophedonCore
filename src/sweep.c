@@ -1,6 +1,5 @@
 #include "internal.h"
 
-#include <float.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -122,40 +121,6 @@ static int slice_limits(BpPolygon boundary, double x, double *low, double *high)
     return found;
 }
 
-static int point_on_edge(BpPoint p, BpPoint a, BpPoint b) {
-    long double dx = (long double)b.x - a.x, dy = (long double)b.y - a.y;
-    long double px = (long double)p.x - a.x, py = (long double)p.y - a.y;
-    long double scale=fabsl(dx)*(fabsl(p.y)+fabsl(a.y))
-        +fabsl(dy)*(fabsl(p.x)+fabsl(a.x))
-        +fabsl(px)*(fabsl(b.y)+fabsl(a.y))
-        +fabsl(py)*(fabsl(b.x)+fabsl(a.x));
-    long double tolerance=8*DBL_EPSILON*scale+16*LDBL_EPSILON*(fabsl(dx*py)+fabsl(dy*px));
-    if (fabsl(dx*py-dy*px)>tolerance) return 0;
-    long double ex=8*DBL_EPSILON*fmax(fabs(a.x),fabs(b.x));
-    long double ey=8*DBL_EPSILON*fmax(fabs(a.y),fabs(b.y));
-    return (long double)p.x>=fmin(a.x,b.x)-ex && (long double)p.x<=fmax(a.x,b.x)+ex
-        && (long double)p.y>=fmin(a.y,b.y)-ey && (long double)p.y<=fmax(a.y,b.y)+ey;
-}
-
-/* Continue from the sweep endpoint around the complete boundary. */
-static BpStatus append_boundary_contour(BpPath *path, BpPolygon boundary) {
-    size_t n = bp_ring_count(boundary), edge = SIZE_MAX;
-    BpPoint anchor = path->points[path->count - 1];
-    for (size_t i = 0; i < n; ++i) {
-        if (point_on_edge(anchor, boundary.vertices[i], boundary.vertices[(i + 1) % n])) {
-            edge = i;
-            break;
-        }
-    }
-    if (edge == SIZE_MAX) return BP_ERR_GEOMETRY;
-    BpStatus status;
-    for (size_t offset = 1; offset <= n; ++offset) {
-        status = bp_path_append(path, boundary.vertices[(edge + offset) % n]);
-        if (status != BP_OK) return status;
-    }
-    return bp_path_append(path, anchor);
-}
-
 static void reverse_path(BpPath *path) {
     for (size_t i = 0, j = path->count ? path->count - 1 : 0; i < j; ++i, --j) {
         BpPoint temporary = path->points[i];
@@ -228,7 +193,6 @@ BpStatus bp_cover_cell(BpCell *cell, double step) {
             if (!slice_limits(boundary, cuts[i], &low, &high)) { status = BP_ERR_GEOMETRY; break; }
             status = bp_path_append(path, connect_upper ? (BpPoint){cuts[i], low} : (BpPoint){cuts[i], high});
         }
-        if (status == BP_OK) status = append_boundary_contour(path, boundary);
     }
     if (status == BP_OK) {
         cell->variants[2] = cell->variants[0];
