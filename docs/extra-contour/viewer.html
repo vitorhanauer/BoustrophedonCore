@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="pt-BR"><meta charset="utf-8"><title>Visualizador GeoJSON — Boustrophedon</title>
+<html lang="en"><meta charset="utf-8"><title>GeoJSON viewer — Boustrophedon</title>
 <style>body{font:16px system-ui;margin:24px auto;max-width:900px;padding:0 20px;background:#f8fafc;color:#172033}svg{width:100%;max-height:65vh;background:white;border:1px solid #cbd5e1}label,button{margin-right:16px}pre{white-space:pre-wrap}input[type=range]{width:70%}</style>
-<h1>Visualizador GeoJSON</h1>
-<p>Quadrado 10×10, largura 1, sobreposição 10%, início e fim em [0,0]. Azul: varredura. Vermelho: contorno extra. Verde: conexão ao destino.</p>
-<label>Percurso <select id="route"><option value="before">Antes</option><option value="after" selected>Depois</option></select></label>
-<label>Carregar LineString GeoJSON <input type="file" id="file" accept=".json,.geojson"></label>
-<p id="summary"></p><svg id="map" viewBox="0 0 600 600" role="img" aria-label="Percurso e ponto selecionado"></svg>
-<p><label>Ponto <input id="step" type="range" min="0" value="0"></label><button id="next">Próximo</button></p><pre id="point"></pre>
+<h1>GeoJSON viewer</h1>
+<p>10×10 square, width 1, overlap 10%, start and end at [0,0]. Blue: sweep. Red: extra contour. Green: connection to the destination.</p>
+<label>Route <select id="route"><option value="before">Before</option><option value="after" selected>After</option></select></label>
+<label>Load a GeoJSON LineString <input type="file" id="file" accept=".json,.geojson"></label>
+<p id="summary"></p><svg id="map" viewBox="0 0 600 600" role="img" aria-label="Route and selected point"></svg>
+<p><label>Point <input id="step" type="range" min="0" value="0"></label><button id="next">Next</button></p><pre id="point"></pre>
 <script>
 const fixtures={"before": {"type": "Feature", "properties": {"points": 31, "length": 194.14213562373095}, "geometry": {"type": "LineString", "coordinates": [[0.0, 0.0], [0.0, 10.0], [0.9, 10.0], [0.9, 0.0], [1.8, 0.0], [1.8, 10.0], [2.7, 10.0], [2.7, 0.0], [3.6, 0.0], [3.6, 10.0], [4.5, 10.0], [4.5, 0.0], [5.4, 0.0], [5.4, 10.0], [6.3, 10.0], [6.3, 0.0], [7.2, 0.0], [7.2, 10.0], [8.1, 10.0], [8.1, 0.0], [9.0, 0.0], [9.0, 10.0], [9.9, 10.0], [9.9, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 10.0], [0.0, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 0.0]]}}, "after": {"type": "Feature", "properties": {"points": 27, "length": 154.14213562373095}, "geometry": {"type": "LineString", "coordinates": [[0.0, 0.0], [0.0, 10.0], [0.9, 10.0], [0.9, 0.0], [1.8, 0.0], [1.8, 10.0], [2.7, 10.0], [2.7, 0.0], [3.6, 0.0], [3.6, 10.0], [4.5, 10.0], [4.5, 0.0], [5.4, 0.0], [5.4, 10.0], [6.3, 10.0], [6.3, 0.0], [7.2, 0.0], [7.2, 10.0], [8.1, 10.0], [8.1, 0.0], [9.0, 0.0], [9.0, 10.0], [9.9, 10.0], [9.9, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 0.0]]}}};
 let feature=fixtures.after;
@@ -21,11 +21,11 @@ function render(reset=false){
  map.replaceChildren();let length=0;
  pts.slice(1).forEach((b,i)=>{const a=pts[i];length+=Math.hypot(b[0]-a[0],b[1]-a[1]);const [x,y]=xy(a),[u,v]=xy(b);let color='#2563eb';if(feature===fixtures.before&&i>=pts.length-6&&i<pts.length-2)color='#dc2626';if(i===pts.length-2)color='#059669';el('path',{d:`M${x},${y} L${u},${v}`,stroke:color,'stroke-width':i<+step.value?2.5:1,opacity:i<+step.value?1:.15,fill:'none'});});
  pts.forEach((p,i)=>{const [x,y]=xy(p);const n=el('circle',{cx:x,cy:y,r:i===+step.value?7:2.5,fill:i===+step.value?'#f97316':'#172033'});const title=document.createElementNS(n.namespaceURI,'title');title.textContent=`${i}: [${p}]`;n.append(title);});
- document.getElementById('summary').textContent=`${pts.length} pontos · ${length.toFixed(6)} unidades`;
- document.getElementById('point').textContent=`Ponto ${step.value}: ${JSON.stringify(pts[+step.value])}`;
+ document.getElementById('summary').textContent=`${pts.length} points · ${length.toFixed(6)} units`;
+ document.getElementById('point').textContent=`Point ${step.value}: ${JSON.stringify(pts[+step.value])}`;
 }
 document.getElementById('route').onchange=e=>{feature=fixtures[e.target.value];render(true);};
 step.oninput=()=>render();document.getElementById('next').onclick=()=>{step.value=Math.min(+step.max,+step.value+1);render();};
-document.getElementById('file').onchange=async e=>{try{const value=JSON.parse(await e.target.files[0].text());const f=value.type==='FeatureCollection'?value.features.find(f=>f.geometry?.type==='LineString'):value.type==='Feature'?value:{type:'Feature',geometry:value};if(f?.geometry?.type!=='LineString'||!f.geometry.coordinates.length||!f.geometry.coordinates.every(p=>p.length>=2&&p.slice(0,2).every(Number.isFinite)))throw Error('Selecione um GeoJSON LineString com coordenadas finitas.');feature=f;render(true);}catch(error){document.getElementById('point').textContent=error.message;}};
+document.getElementById('file').onchange=async e=>{try{const value=JSON.parse(await e.target.files[0].text());const f=value.type==='FeatureCollection'?value.features.find(f=>f.geometry?.type==='LineString'):value.type==='Feature'?value:{type:'Feature',geometry:value};if(f?.geometry?.type!=='LineString'||!f.geometry.coordinates.length||!f.geometry.coordinates.every(p=>p.length>=2&&p.slice(0,2).every(Number.isFinite)))throw Error('Select a GeoJSON LineString with finite coordinates.');feature=f;render(true);}catch(error){document.getElementById('point').textContent=error.message;}};
 render(true);
 </script></html>

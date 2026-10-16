@@ -1,42 +1,44 @@
-# Visão Geral
+# Overview
 
-O intuito do projeto é fazer uma implementação do algoritmo Boustrophedon para percorrer um poligono e entregar uma array de pontos. Essa implementação deverá ser feita em C. Essa será a lógica core, porém, essa implementação será utilizadas por outras linguagens de programação, ou seja, as outras linguagens farão um wrapper dessa implementação. Essa implementação também precisa conseguir se chamada por outros códigos em C.
+Implement the Boustrophedon algorithm in C to traverse a polygon and return an array of points. BoustrophedonCore provides the core logic for wrappers in other programming languages and must also be callable directly from C.
 
-O processos do algortimo de dividem em alguns segmentos:
-1. Dividir a área recebida em polígonos menores continuos.
-2. Tratar os polígonos menores como nós de um grafo e encontrar o menor caminho entre esses nós.
-3. Gerar o caminho de pontos em cada nó
-4. Unir os caminhos de cada nó o, o final de um nó se liga ao inicio do outro nó.
+The algorithm has four stages:
 
-Cada uma dessas etapas é será descrita posteriormente
+1. Divide the input area into smaller connected polygons.
+2. Treat those polygons as graph nodes and find a short route between them.
+3. Generate a coverage path inside each node.
+4. Join the node paths, connecting the end of one to the beginning of the next.
 
-# Assinatura da função
+# Entry point
 
-A implementação deverá ter uma função de ponto de entrada, ou seja, uma única função que outros código irão chamar. Isso não significa que todo o código deve ficar em uma única função. Abaixo o pseudo código da assinatura da função.
+Provide a single entry point for callers. Keep implementation responsibilities in separate functions. Conceptual signature:
 
+```text
+generateWaypoints(Start Point, End Point, Area Vertices, Obstacle Vertices, Coverage Width, Overlap);
 ```
-generateWaypoints(Ponto Inicial, Ponto Final, Vertices da Area, Vertices dos Bloqueios, Largura de atuação, Sobreposição);
-```
-**Ponto Inicial**: Representado por dois valores, [10,10] ou {x: 10, y: 10}. Será de onde o agente autonomo irá começar o percurso.
-**Ponto Final**: Representado por dois valores, [10,10] ou {x: 10, y: 10}. Será de onde o agente autonomo irá terminar o percurso.
-**Vertices da Area**: Representado por vários valores, [[10,10],[10,9],...] ou [{x: 10, y:10}, {x:10, y: 9}]. Representa os vertices do poligono a ser percorrido.
-**Vertices dos Bloqueios**: Representado por vários valores, [[[10,10],[10,9],...], [[10,10],[10,9],...]] ou [[{x: 10, y:10}, {x:10, y: 9}], [{x: 10, y:10}, {x:10, y: 9}]]. Representa os vertices do obstáculos.
-**Largura de atuação**: Representado por um único valor, 10. Representa a largura total da visão do agente autonomo, valor da direita + valor da esquerda.
-**Sobreposição**: Representado por um único valor, 0 a 100. Representa o quanto as larguras de visão devem se sobrepor.
 
-OBS: A distância entre as linhas é calculada através da seguinte formular: distância = largura(1 - sobreposição).
+- **Start point:** two coordinates, such as `[10, 10]` or `{x: 10, y: 10}`, where the autonomous agent starts the route.
+- **End point:** two coordinates where the agent finishes the route.
+- **Area vertices:** a sequence of coordinate pairs describing the polygon to cover, such as `[[10, 10], [10, 9], ...]`.
+- **Obstacle vertices:** a sequence of polygons, each represented by its vertices, such as `[[[10, 10], [10, 9], ...], ...]`.
+- **Coverage width:** the full sensing or working width, including both the left and right sides of the agent.
+- **Overlap:** the percentage by which adjacent coverage swaths overlap.
 
-# Práticas de codificação
+Lane spacing is `width * (1 - overlapPercent / 100)`. The API accepts overlap in `[0, 100)`; exactly 100% would produce zero spacing.
 
-- Utilizar convetional commits e sempre commitar quando tiver terminado a menor unidade de uma atividade funcional.
-- Utilizar nomes de variáveis, funções etc de forma que fiquem legíveis.
-- Utilizar TDD para codificar primeiro um teste funcional e depois criar a funcionalidade.
+# Coding practices
 
-# Limitação
+- Use Conventional Commits and commit each completed functional unit of work.
+- Use readable names for variables, functions and other identifiers.
+- Use TDD: write a failing functional test before implementing behavior.
 
-Para o cenário de teste será utilizado uma configuração de 512MB de RAM e 1Ghz de clock. 
-Os polígonos de testes devem ser de:
-- 10x10 utilizando larguras de atuação de 1,5.
-- 100x100 utilizando larguras de atuação de 1,5,10,50.
-- 1_000x1_000 utilizando larguras de atuação de 1,5,10,50.
-- 10_000x10_000 utilizando larguras de atuação de 1,5,10,50.
+# Resource constraints
+
+The target test configuration is 512 MB of RAM and a 1 GHz CPU. Use the following square sizes and coverage widths:
+
+| Square size | Coverage widths |
+|---|---|
+| 10 × 10 | 1, 5 |
+| 100 × 100 | 1, 5, 10, 50 |
+| 1,000 × 1,000 | 1, 5, 10, 50 |
+| 10,000 × 10,000 | 1, 5, 10, 50 |
