@@ -14,7 +14,9 @@ typedef enum {
 } BpStatus;
 
 /* Inputs are borrowed. output must be empty; success transfers ownership.
- * overlap_percent is in [0,100). Boundaries are traversable.
+ * overlap_percent is in [0,100). Coverage and connectors are offset from
+ * original boundaries using the lane spacing; see README for the margin model.
+ * Explicit start/end points are preserved and may lie on original boundaries.
  * Release successful results with freeWaypoints before reusing output. */
 BpStatus generateWaypoints(BpPoint start, BpPoint end, BpPolygon area,
     const BpPolygon *obstacles, size_t obstacle_count, double width,

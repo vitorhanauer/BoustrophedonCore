@@ -24,11 +24,12 @@ static BpStatus exercise(int connector,BpPath *output) {
     const BpPoint block[]={{4,3},{6,3},{6,7},{4,7}};
     BpPolygon area={vertices,4},obstacle={block,4};
     BpDomain domain={area,&obstacle,1};
-    if (connector) return bp_shortest_path(&domain,(BpPoint){2,5},(BpPoint){8,5},output,NULL);
-    return generateWaypoints((BpPoint){0,0},(BpPoint){10,10},area,NULL,0,5,0,output);
+    if (connector==1) return bp_shortest_path(&domain,(BpPoint){2,5},(BpPoint){8,5},output,NULL);
+    return generateWaypoints((BpPoint){0,0},(BpPoint){10,10},area,
+        connector==2 ? &obstacle : NULL,connector==2 ? 1U : 0U,1,25,output);
 }
 int main(void) {
-    for (int connector=0;connector<=1;connector++) {
+    for (int connector=0;connector<=2;connector++) {
         BpPath output={0};allocation_index=0;fail_at=SIZE_MAX;injecting=1;
         BpStatus status=exercise(connector,&output);
         injecting=0;CHECK(status==BP_OK);

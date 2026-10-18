@@ -34,13 +34,26 @@ shared mutable state.
   self-intersections, overlapping/nested obstacles and touching contours are
   rejected. Collinear vertices without backtracking are accepted.
 - Obstacles must be strictly inside the outer ring. Start and end must be in the
-  free domain. Outer and obstacle boundaries are traversable; obstacle interiors
-  and the exterior of the area are forbidden. The agent has no physical radius
-  or minimum turning radius.
+  free domain. The agent has no physical radius or minimum turning radius.
+  Coverage and inter-cell connectors use an inset outer ring and expanded
+  obstacles. Explicit start/end coordinates are preserved, including coordinates
+  on an original boundary; their approach/departure segments may cross the
+  inset margin, while remaining in the original free domain.
 - The coverage footprint is a disk of radius `width/2`, with no sensor occlusion.
-  Width is the full diameter. Overlap is a percentage in `[0,100)`, and lane
-  spacing is `width * (1 - overlap_percent/100)`. Exactly 100% has zero spacing
-  and is rejected. Nonfinite values and unrepresentable spacing are rejected.
+  Width is the full diameter. Overlap is a percentage in `[0,100)`, and requested
+  lane spacing is `s = width * (1 - overlap_percent/100)`. Exactly 100% has zero
+  spacing and is rejected. Nonfinite values and unrepresentable spacing are
+  rejected.
+- The nominal boundary clearance is `d = s/(2*sqrt(2))`. Miters at sharp corners
+  cap vertex displacement at `s/2`, reducing the clearance for the entire domain
+  when needed. If offsets intersect or close a passage, clearance is repeatedly
+  halved until the offset domain is valid and connected. No narrow component is
+  silently dropped. Numerically unrepresentable offsets return `BP_ERR_LIMIT`.
+  This is a coverage margin, rather than a guaranteed physical vehicle clearance.
+- Actual lane spacing is at most `min(s, sqrt(width*width - 4*d*d))`. This keeps
+  rectangular edge samples within the circular footprint after shortening the
+  lanes. At low overlap it can require more lanes than the previous boundary
+  sweep; at higher overlap the requested spacing already suffices.
 - Decomposition and coverage use the vertical axis for the sweep segments and
   advance along x. There is no search over sweep angles in this release.
 
@@ -49,13 +62,15 @@ fragments until a split or merge in connectivity. Cells keep their actual
 polygonal boundaries, including concavities. Adjacent cells share a boundary
 interval, rather than only a single point.
 
-Within each x-monotone cell, the path traverses complete vertical cuts with gaps
-no greater than the requested spacing and links successive cuts along the cell
-boundary. After the last cut, it connects to the next cell or the final point
+Within each x-monotone cell of the offset domain, the path traverses complete
+vertical cuts with gaps no greater than the adjusted spacing and links successive
+cuts along the cell boundary. Artificial boundaries between cells are shared;
+the clearance applies to the original area and obstacles, not to these seams. After the last cut, it connects to the next cell or the final point
 without adding a full contour lap. Necessary boundary links remain to avoid
 shortcuts outside concave cells.
 
-Full coverage by a disk of radius `width/2` is verified for rectangular cells.
+Full coverage by a disk of radius `width/2` is verified for rectangular domains,
+including rectangular obstacles, by sampling edges, corners and interiors.
 For arbitrary inclined or sharp boundaries, lane spacing alone does not guarantee
 that every boundary point is within that radius of the route. No complete
 boundary-coverage guarantee is made for those geometries.

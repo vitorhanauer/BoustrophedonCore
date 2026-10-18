@@ -1,5 +1,27 @@
 # Validation record
 
+## Boundary clearance change — 2026-10-18
+
+A new public-API regression first failed because generated waypoints were on
+original polygon boundaries. After the change, tests sample the original free
+area (including corners and obstacle edges) against the disk footprint at 0%,
+25% and 75% overlap. They independently check segment safety and separation
+from rectangular obstacles. Narrow passages, domains smaller than the sensor
+width, ring winding and fixed boundary terminals are also exercised.
+
+CMake is unavailable in this environment. All five test executables were built
+directly with `cc -std=c11 -O2` and the warning flags from CMakeLists.txt; all
+passed, including allocator failure injection with and without an obstacle.
+The 14-case benchmark matrix and the concave and obstacle fixtures passed.
+The largest square case used 3,972 KiB peak RSS; these runs were on the local
+host, without a 512 MiB limit or a controlled 1 GHz CPU frequency.
+
+The four functional suites passed AddressSanitizer and UndefinedBehaviorSanitizer
+with `ASAN_OPTIONS=detect_leaks=0`. LeakSanitizer could not run under this
+environment's ptrace instrumentation; no new leak-check claim is made.
+
+The records below describe the earlier implementation and remain historical.
+
 Validated on 2026-10-15. Implementation source at
 `fc25a44bd0bdc20f2548269f73ac5c89d42a32aa`; the following documentation commit
 adds these records without changing the implementation.

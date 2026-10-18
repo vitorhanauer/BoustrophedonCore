@@ -9,6 +9,16 @@ typedef struct {
     size_t obstacle_count;
 } BpDomain;
 typedef struct {
+    BpDomain domain;
+    BpPath area;
+    BpPolygon *obstacles;
+    double clearance;
+} BpInsetDomain;
+BpStatus bp_inset_domain(const BpDomain *source, double spacing, BpInsetDomain *output);
+void bp_free_inset_domain(BpInsetDomain *domain);
+BpStatus bp_inset_terminal(const BpDomain *source, const BpDomain *inset,
+    BpPoint terminal, BpPoint *anchor);
+typedef struct {
     BpPath boundary; /* CCW or CW simple x-monotone polygon, owned. */
     BpPath variants[4]; /* two sweep senses, then their reversals. */
 } BpCell;

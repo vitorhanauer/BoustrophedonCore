@@ -338,20 +338,113 @@ static void test_general_obstacles_and_closed_route(void) {
     expect_api_error(BP_ERR_GEOMETRY,start,start,area,&invalid,1,1,0);
 }
 
+/* The footprint must still reach edges and corners after moving the route. */
+static double distance_to_route(BpPoint sample, const BpPath *path) {
+    double best = INFINITY;
+    for (size_t i = 1; i < path->count; ++i) {
+        BpPoint a = path->points[i-1], b = path->points[i];
+        double dx=b.x-a.x, dy=b.y-a.y, length=dx*dx+dy*dy;
+        double t=length>0 ? ((sample.x-a.x)*dx+(sample.y-a.y)*dy)/length : 0;
+        t=fmax(0,fmin(1,t));
+        best=fmin(best,hypot(sample.x-a.x-t*dx,sample.y-a.y-t*dy));
+    }
+    return best;
+}
+
+static void test_public_boundary_clearance(void) {
+    BpPolygon area={square_vertices,4}, obstacle={box_vertices,4};
+    const double overlaps[]={0,25,75};
+    for (size_t fixture=0;fixture<2;fixture++) {
+        for (size_t k=0;k<3;k++) {
+            BpPath path={0}; double width=1, overlap=overlaps[k];
+            BpPoint start={1,1}, end={9,9};
+            CHECK(generateWaypoints(start,end,area,fixture?&obstacle:NULL,
+                fixture, width,overlap,&path)==BP_OK);
+            check_safe_path(area,fixture?&obstacle:NULL,fixture,&path);
+            for (size_t i=1;i+1<path.count;i++) {
+                BpPoint p=path.points[i];
+                CHECK(p.x>0 && p.x<10 && p.y>0 && p.y<10);
+                if (fixture) CHECK(independent_location(obstacle,p)<0);
+            }
+            double margin=(1-overlap/100)/(2*sqrt(2.0));
+            const BpPoint closed_box[]={{4,3},{6,3},{6,7},{4,7},{4,3}};
+            BpPath box_boundary={(BpPoint *)closed_box,5};
+            for (size_t i=0;i<path.count;i++) {
+                BpPoint p=path.points[i];
+                CHECK(fmin(fmin(p.x,10-p.x),fmin(p.y,10-p.y))>=margin-1e-8);
+                if (fixture) CHECK(distance_to_route(p,&box_boundary)>=margin-1e-8);
+            }
+            if (fixture) {
+                /* Checking both segment endpoint sets certifies separation
+                 * of disjoint line segments, including diagonal connectors. */
+                for (size_t i=0;i<4;i++)
+                    CHECK(distance_to_route(closed_box[i],&path)>=margin-1e-8);
+            }
+            for (int x=0;x<=100;x++) for (int y=0;y<=100;y++) {
+                BpPoint sample={(double)x/10,(double)y/10};
+                if (fixture && independent_location(obstacle,sample)>0) continue;
+                CHECK(distance_to_route(sample,&path)<=width/2+1e-8);
+            }
+            freeWaypoints(&path);
+        }
+    }
+}
+
+static void test_clearance_in_narrow_and_small_domains(void) {
+    const BpPoint narrow[]={
+        {0,0},{4,0},{4,1.9},{6,1.9},{6,0},{10,0},
+        {10,4},{6,4},{6,2.1},{4,2.1},{4,4},{0,4}
+    };
+    const BpPoint tiny[]={{0,0},{0.1,0},{0.1,0.1},{0,0.1}};
+    BpPolygon fixtures[]={{narrow,12},{tiny,4}};
+    for (size_t i=0;i<2;i++) {
+        BpPolygon area=fixtures[i];
+        BpPoint start=i ? (BpPoint){0.02,0.02} : (BpPoint){1,2};
+        BpPoint end=i ? (BpPoint){0.08,0.08} : (BpPoint){9,2};
+        BpPath path={0};
+        CHECK(generateWaypoints(start,end,area,NULL,0,1,0,&path)==BP_OK);
+        check_safe_path(area,NULL,0,&path);
+        CHECK(same_point(path.points[0],start));
+        CHECK(same_point(path.points[path.count-1],end));
+        for (size_t j=1;j+1<path.count;j++)
+            CHECK(independent_location(area,path.points[j])==1);
+        freeWaypoints(&path);
+    }
+}
+
+static void test_boundary_terminals_use_short_approaches(void) {
+    BpPolygon area={square_vertices,4}, obstacle={box_vertices,4};
+    const BpPoint starts[]={{5,0},{4,5}};
+    double margin=1/(2*sqrt(2.0));
+    for (size_t fixture=0;fixture<2;fixture++) {
+        BpPath path={0};
+        CHECK(generateWaypoints(starts[fixture],(BpPoint){9,9},area,
+            fixture ? &obstacle : NULL,fixture,1,0,&path)==BP_OK);
+        CHECK(same_point(path.points[0],starts[fixture]));
+        NEAR(hypot(path.points[1].x-starts[fixture].x,
+            path.points[1].y-starts[fixture].y),margin,1e-8);
+        check_safe_path(area,fixture ? &obstacle : NULL,fixture,&path);
+        freeWaypoints(&path);
+    }
+}
+
 static void test_overlap_spacing(void) {
     const BpPoint vertices[]={{0,0},{10,0},{10,10},{0,10}};
-    const double expected[]={0,1.5,3,4.5,6,7.5,9,10};
-    int seen[8]={0}; BpPath path={0};BpPolygon area={vertices,4};
+    double margin=1.5/(2*sqrt(2.0));
+    double expected[]={margin,margin+1.5,margin+3,margin+4.5,
+        margin+6,margin+7.5,10-margin};
+    int seen[7]={0}; BpPath path={0};BpPolygon area={vertices,4};
     CHECK(generateWaypoints(vertices[0],vertices[2],area,NULL,0,2,25,&path)==BP_OK);
     for (size_t i=1;i<path.count;i++) {
         BpPoint a=path.points[i-1],b=path.points[i];
-        if (a.x==b.x && fmin(a.y,b.y)==0 && fmax(a.y,b.y)==10) {
+        if (a.x==b.x && fabs(fmin(a.y,b.y)-margin)<1e-12
+                && fabs(fmax(a.y,b.y)-(10-margin))<1e-12) {
             size_t lane=0;
-            while (lane<8 && fabs(a.x-expected[lane])>1e-12) lane++;
-            CHECK(lane<8);seen[lane]=1;
+            while (lane<7 && fabs(a.x-expected[lane])>1e-12) lane++;
+            CHECK(lane<7);seen[lane]=1;
         }
     }
-    for (size_t i=0;i<8;i++) CHECK(seen[i]);
+    for (size_t i=0;i<7;i++) CHECK(seen[i]);
     freeWaypoints(&path);
 }
 
@@ -364,9 +457,8 @@ static void test_sweep_finishes_without_extra_contour(void) {
     check_safe_path(area, NULL, 0, &route);
     CHECK(same_point(route.points[0], vertices[0]));
     CHECK(same_point(route.points[route.count - 1], vertices[2]));
-    /* Three height-2 cuts and two width-1 links finish at the destination.
-     * A perimeter lap would add another 8 units. */
-    NEAR(independent_length(&route), 8.0, 1e-9);
+    /* Three inset cuts, two links and the two terminal approaches. */
+    NEAR(independent_length(&route), 4*(2-1/sqrt(2.0))+1, 1e-9);
     freeWaypoints(&route);
 }
 
@@ -378,13 +470,18 @@ static void test_closed_route_returns_after_last_cut(void) {
     check_safe_path(area, NULL, 0, &route);
     CHECK(same_point(route.points[0], square_vertices[0]));
     CHECK(same_point(route.points[route.count - 1], square_vertices[0]));
-    /* Thirteen height-10 cuts, horizontal links totaling 10, and the
-     * direct diagonal home. A contour lap would add another 40 units. */
-    NEAR(independent_length(&route), 140.0 + sqrt(200.0), 1e-9);
+    /* Bound sweep plus direct return; a perimeter lap exceeds this bound. */
+    double margin=0.9/(2*sqrt(2.0)), span=10-2*margin;
+    double gap=sqrt(1-4*margin*margin);
+    double lanes=ceil(span/gap)+1;
+    CHECK(independent_length(&route)<=(lanes+1)*span+sqrt(2.0)*span+0.9+1e-9);
     freeWaypoints(&route);
 }
 
 int main(void) {
+    test_public_boundary_clearance();
+    test_boundary_terminals_use_short_approaches();
+    test_clearance_in_narrow_and_small_domains();
     test_closed_route_returns_after_last_cut();
     test_sweep_finishes_without_extra_contour();
     test_overlap_spacing();

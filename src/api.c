@@ -61,19 +61,37 @@ BpStatus generateWaypoints(BpPoint start, BpPoint end, BpPolygon area,
     BpStatus status=bp_validate_domain(&domain,start,end);
     if (status!=BP_OK) return status;
     BpDecomposition decomposition={0};BpVisitPlan plan={0};BpPath result={0};
-    status=bp_decompose(&domain,&decomposition);
+    BpInsetDomain inset={0};
+    BpPoint inset_start, inset_end;
+    status=bp_inset_domain(&domain,step,&inset);
+    if (status!=BP_OK) goto done;
+    status=bp_inset_terminal(&domain,&inset.domain,start,&inset_start);
+    if (status!=BP_OK) goto done;
+    status=bp_inset_terminal(&domain,&inset.domain,end,&inset_end);
+    if (status!=BP_OK) goto done;
+    /* At a horizontal edge, the most distant sample lies midway between
+     * lanes. Keep its distance sqrt((gap/2)^2 + clearance^2) <= width/2. */
+    double relative_clearance=2*inset.clearance/width;
+    step=fmin(step,width*sqrt(1-relative_clearance*relative_clearance));
+    status=bp_decompose(&inset.domain,&decomposition);
     if (status!=BP_OK) goto done;
     for (size_t i=0;i<decomposition.count;i++) {
         status=bp_cover_cell(&decomposition.cells[i],step);
         if (status!=BP_OK) goto done;
     }
-    status=bp_order_cells(&domain,&decomposition,start,end,&plan);
+    status=bp_order_cells(&inset.domain,&decomposition,inset_start,inset_end,&plan);
     if (status!=BP_OK) goto done;
-    status=bp_stitch(&domain,&decomposition,&plan,start,end,&result);
+    BpPath coverage={0};
+    status=bp_stitch(&inset.domain,&decomposition,&plan,inset_start,inset_end,&coverage);
+    if (status==BP_OK) status=bp_path_append(&result,start);
+    if (status==BP_OK) status=bp_path_extend(&result,&coverage);
+    if (status==BP_OK) status=bp_path_append(&result,end);
+    freeWaypoints(&coverage);
     if (status!=BP_OK) goto done;
     if (!isfinite(bp_path_length(&result))) { status=BP_ERR_LIMIT;goto done; }
     *output=result;result=(BpPath){0};
  done:
     freeWaypoints(&result);bp_free_plan(&plan);bp_free_decomposition(&decomposition);
+    bp_free_inset_domain(&inset);
     return status;
 }
